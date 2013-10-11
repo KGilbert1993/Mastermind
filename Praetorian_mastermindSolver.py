@@ -40,7 +40,7 @@ i = 0
 ## Generate initial guess
 ##############################################
 
-while i < int(NUM_PLACES):
+while i < NUM_PLACES:
     new = random.randint(0, NUM_COLORS)
     if new not in guess:
         guess.add(new)
@@ -63,7 +63,7 @@ CORRECT_BOTH = int(raw_input("Enter number of correct values in the correct plac
 rangeNaught = range(NUM_COLORS)
 range_ = (x for x in rangeNaught and guess)    
 potentialGuessSet = set(itertools.permutations(range_, CORRECT_VAL))
-solutionSpace = set()
+solutionSpace = list()
 '''
 widgets = ['Test: ', Percentage(), ' ', Bar(marker=RotatingMarker()),
             ' ', ETA(), ' ', FileTransferSpeed()]
@@ -71,9 +71,9 @@ pbar = ProgressBar(widgets=widgets, maxval=10000000).start()
 '''
 
 for i in xrange(size):
-	setCompare = frozenset(Set.next())
+	setCompare = Set.next()
 	if len([a for a in potentialGuessSet if set(a).issubset(setCompare)]) != 0:
-		solutionSpace.add(setCompare)
+		solutionSpace.append(setCompare)
 	i += 1
 	#pbar.update(i)
 #pbar.finish()
@@ -81,7 +81,7 @@ print solutionSpace
 print "Size of solution space: " + str(len(solutionSpace)) 
 
 
-while CORRECT_BOTH != NUM_PLACES:
+while CORRECT_VAL != NUM_PLACES:
 	# determine best guess
 	guess = random.sample(solutionSpace, 1)
 	print "Try: " 
@@ -98,7 +98,7 @@ while CORRECT_BOTH != NUM_PLACES:
 	while i < len(solutionSpace):
 		setCompare = solutionSpace[i]
 		if len([a for a in potentialGuessSet if set(a).issubset(setCompare)]) == 0:
-			solutionSpace.discard(setCompare)
+			solutionSpace.remove(setCompare)
 		i += 1
 		#if i%1000 == 0:
 			#print i  
