@@ -1,36 +1,49 @@
 import itertools
 import random
 import sys
+import time
 import math
 
+from progressbar import AnimatedMarker, Bar, BouncingBar, Counter, ETA, \
+                        FileTransferSpeed, FormatLabel, Percentage, \
+                        ProgressBar, ReverseBar, RotatingMarker, \
+                        SimpleProgress, Timer
 
-# n choose r function
-def nCr(n,r):
+# n choose r ordered function
+def lenPerm(n,r):
     f = math.factorial
-    return f(n) / (f(r) * f(n-r))
+    return f(n) / (f(n-r))
 
-#Set = set(itertools.permutations(range(6), 4))
+###############################################################################
+## Generate initial sets
+#		- Retrieve scope of game (range of places/numbers)
+#		- Create universal set generator from input values
+#		- Randomly generate initial guess
+#		- Receive feedback from initial guess, create solutionSpace 
+#		- Enter loop that continues while game is not complete 
+#
+###############################################################################
 NUM_PLACES = int(raw_input("Enter number of places: \n"))
 NUM_COLORS = int(raw_input("Enter number of numbers: \n"))
 
-'''
-CORRECT_VAL = int(raw_input("Enter number of correct values, wrong place: \n"))
-CORRECT_BOTH = int(raw_input("Enter number of correct values in the correct place: \n"))
-'''
-
-    # Set generation
+############################################## 
+## Set generation
+##############################################
 Set = (itertools.permutations(range(NUM_COLORS), NUM_PLACES))
-size = nCr(NUM_COLORS, NUM_PLACES)
+size = lenPerm(NUM_COLORS, NUM_PLACES)
 print "Size of set: " + str(size)
-range = range(NUM_COLORS)
 
-guess = list()
+guess = set()
 i = 0
+
+##############################################
+## Generate initial guess
+##############################################
 
 while i < int(NUM_PLACES):
     new = random.randint(0, NUM_COLORS)
     if new not in guess:
-        guess.append(new)
+        guess.add(new)
         i += 1
 print "Try: "
 print guess
@@ -38,41 +51,59 @@ print guess
 CORRECT_VAL = int(raw_input("Enter number of correct values, wrong place: \n"))
 CORRECT_BOTH = int(raw_input("Enter number of correct values in the correct place: \n"))
 
-range = (x for x in range and guess)    
-guessSet = set(itertools.permutations(range, CORRECT_VAL))
-solutionSpace = list()
-    
+##############################################
+## Generate set of values based on the guess
+#		and user feedback on number correct.
+#		- Will use this set later to clear
+#		values from the solutionSpace that 
+#		cannot be the answer.
+#
+##############################################
+
+rangeNaught = range(NUM_COLORS)
+range_ = (x for x in rangeNaught and guess)    
+potentialGuessSet = set(itertools.permutations(range_, CORRECT_VAL))
+solutionSpace = set()
+'''
+widgets = ['Test: ', Percentage(), ' ', Bar(marker=RotatingMarker()),
+            ' ', ETA(), ' ', FileTransferSpeed()]
+pbar = ProgressBar(widgets=widgets, maxval=10000000).start()
+'''
+
 for i in xrange(size):
-    setCompare = set(Set.next())
-    if len([a for a in guessSet if set(a).issubset(setCompare)]) != 0:
-        solutionSpace.append(setCompare)
-    if i%1000 == 0:
-        print i  
-        
-print solutionSpace   
+	setCompare = frozenset(Set.next())
+	if len([a for a in potentialGuessSet if set(a).issubset(setCompare)]) != 0:
+		solutionSpace.add(setCompare)
+	i += 1
+	#pbar.update(i)
+#pbar.finish()
+print solutionSpace	
 print "Size of solution space: " + str(len(solutionSpace)) 
 
 
 while CORRECT_BOTH != NUM_PLACES:
 	# determine best guess
-	guess = solutionSpace[random.randint(0, len(solutionSpace)-1)]
+	guess = random.sample(solutionSpace, 1)
 	print "Try: " 
 	print guess
 	
 	CORRECT_VAL = int(raw_input("Enter number of correct values, wrong place: \n"))
 	CORRECT_BOTH = int(raw_input("Enter number of correct values in the correct place: \n"))
 	
-	range = (x for x in range and guess)
-	guessSet = set(itertools.permutations(range, CORRECT_VAL))
+	range_ = (x for x in range_ and guess)
+	potentialGuessSet = set(itertools.permutations(range_, CORRECT_VAL))
 	
-	for i in xrange(len(solutionSpace) - 1):
+	i = 0
+	
+	while i < len(solutionSpace):
 		setCompare = solutionSpace[i]
-		if len([a for a in guessSet if set(a).issubset(setCompare)]) == 0:
-			solutionSpace.remove(setCompare)
-			i += 1
-		if i%1000 == 0:
-			print i  
+		if len([a for a in potentialGuessSet if set(a).issubset(setCompare)]) == 0:
+			solutionSpace.discard(setCompare)
+		i += 1
+		#if i%1000 == 0:
+			#print i  
         	
+	print solutionSpace
 	print "New solution space size: \n"
 	print len(solutionSpace)
 
