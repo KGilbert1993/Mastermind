@@ -61,7 +61,7 @@ CORRECT_BOTH = int(raw_input("Enter number of correct values in the correct plac
 ##############################################
 
 rangeNaught = range(NUM_COLORS)
-range_ = (x for x in rangeNaught and guess)    
+range_ = set(x for x in rangeNaught and guess)    
 potentialGuessSet = set(itertools.permutations(range_, CORRECT_VAL))
 solutionSpace = list()
 '''
@@ -90,7 +90,7 @@ while CORRECT_VAL != NUM_PLACES:
 	CORRECT_VAL = int(raw_input("Enter number of correct values, wrong place: \n"))
 	CORRECT_BOTH = int(raw_input("Enter number of correct values in the correct place: \n"))
 	
-	range_ = (x for x in range_ and guess)
+	range_ = set(x for x in range_ and guess)
 	potentialGuessSet = set(itertools.permutations(range_, CORRECT_VAL))
 	
 	i = 0
