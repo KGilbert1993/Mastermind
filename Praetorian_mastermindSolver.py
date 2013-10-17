@@ -64,19 +64,19 @@ rangeNaught = range(NUM_COLORS)
 range_ = set(x for x in rangeNaught and guess)    
 potentialGuessSet = set(itertools.permutations(range_, CORRECT_VAL))
 solutionSpace = list()
-'''
+
 widgets = ['Test: ', Percentage(), ' ', Bar(marker=RotatingMarker()),
             ' ', ETA(), ' ', FileTransferSpeed()]
-pbar = ProgressBar(widgets=widgets, maxval=10000000).start()
-'''
+pbar = ProgressBar(widgets=widgets, maxval=int(size)).start()
 
-for i in xrange(size):
+i=0
+while i < size:
 	setCompare = Set.next()
 	if len([a for a in potentialGuessSet if set(a).issubset(setCompare)]) != 0:
 		solutionSpace.append(setCompare)
 	i += 1
-	#pbar.update(i)
-#pbar.finish()
+	pbar.update(i)
+pbar.finish()
 print solutionSpace	
 print "Size of solution space: " + str(len(solutionSpace)) 
 
