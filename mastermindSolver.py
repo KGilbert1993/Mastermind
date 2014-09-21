@@ -9,6 +9,9 @@ from progressbar import AnimatedMarker, Bar, BouncingBar, Counter, ETA, \
                         ProgressBar, ReverseBar, RotatingMarker, \
                         SimpleProgress, Timer
 
+
+# Memory contstraints for large problem sets. Brute forcing not realistic.
+
 # n choose r ordered function
 def lenPerm(n,r):
     f = math.factorial
