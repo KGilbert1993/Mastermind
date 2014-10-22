@@ -10,4 +10,4 @@ for i in xrange(1,9):
         print newsite
         webbrowser.open(newsite)
     else: 
-        print 'fuck you'
+        print 'uh-oh'
